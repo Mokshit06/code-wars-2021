@@ -3,12 +3,15 @@ import express from 'express';
 import store from './apps/store';
 import api from './apps/api';
 import cors from 'cors';
+import { User as PrismaUser } from '@prisma/client';
 
 declare global {
   namespace Express {
     export interface Request {
       store?: string;
     }
+
+    export interface User extends PrismaUser {}
   }
 }
 

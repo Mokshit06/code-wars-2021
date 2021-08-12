@@ -14,6 +14,11 @@ enum SocialProvider {
   GOOGLE
 }
 
+// enum ProductStatus {
+//   ACTIVE
+//   DRAFT
+// }
+
 model User {
   id        String         @id @default(uuid())
   name      String
@@ -41,14 +46,24 @@ model StoreUser {
 }
 
 model Store {
-  id        String      @id @default(uuid())
-  subdomain String
-  pages     Page[]
-  owner     User        @relation(fields: [userId], references: [id])
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  userId    String
-  customers StoreUser[]
+  id          String      @id @default(uuid())
+  name        String      @unique
+  domain      String      @unique
+  address     String
+  apartment   String
+  city        String
+  country     String
+  state       String
+  pinCode     String
+  phoneNumber String
+  website     String?
+  pages       Page[]
+  products    Product[]
+  owner       User        @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userId      String
+  customers   StoreUser[]
 }
 
 model Page {
@@ -69,12 +84,15 @@ model Product {
   id            String         @id @default(uuid())
   slug          String
   name          String
+  // status        ProductStatus
   description   String?
   availability  Int?
   sku           String?
   price         Int
   currency      String         @default("INR")
   images        String[]
+  store         Store          @relation(fields: [storeId], references: [id])
+  storeId       String
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   orderProducts OrderProduct[]
