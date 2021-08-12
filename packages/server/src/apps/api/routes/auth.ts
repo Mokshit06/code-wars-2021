@@ -20,9 +20,12 @@ router.get('/success', (req, res) => {
       <p>You can close this window now</p>
       <script>
         let originUrl = window.location.origin;
-        if (window.location.hostname === 'localhost') {
-          originUrl = 'http://localhost:3000'
+        
+        if (window.location.hostname === 'api.lvh.me') {
+          originUrl = 'http://lvh.me:3000'
         }
+
+        console.log({hostname: window.location.hostname, originUrl})
         window.opener.postMessage('success', originUrl);
         window.close();
       </script>
