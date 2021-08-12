@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node -r esbuild-register src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon --exec node -r esbuild-register src/index.ts",
     "start": "cross-env NODE_ENV=production node -r esbuild-register src/index.ts"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "dotenv-flow": "^3.2.0",
     "esbuild": "^0.12.19",
     "esbuild-register": "^2.6.0",
+    "nodemon": "^2.0.12",
     "prisma": "^2.29.0",
     "typescript": "^4.3.5"
   }
