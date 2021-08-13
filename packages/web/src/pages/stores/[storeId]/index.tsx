@@ -106,7 +106,7 @@ export default function Store() {
                 Choose a theme and add your logo, colors, and images to reflect
                 your brand.
               </Text>
-              <Button my="1.5rem" as="a" href="products/create">
+              <Button my="1.5rem" as="a" href={`/stores/${storeId}/theme`}>
                 Customize theme
               </Button>
             </TabPanel>

@@ -25,7 +25,7 @@ export default function CreateStore() {
   const toast = useToast();
   const router = useRouter();
   const mutation = useMutation(async (values: Values) =>
-    api.post('/store', values)
+    api.post('/stores', values)
   );
   const handleSubmit = async (
     values: Values,
@@ -42,7 +42,7 @@ export default function CreateStore() {
     });
 
     setSubmitting(false);
-    router.push('/store');
+    router.push('/stores');
   };
 
   return (

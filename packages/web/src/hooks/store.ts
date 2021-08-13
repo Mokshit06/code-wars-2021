@@ -1,5 +1,6 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import type { Store, Product, Page } from '@prisma/client';
+import api from '@/lib/api';
 
 export function useStores() {
   return useQuery<Store[]>('/stores');
@@ -20,4 +21,17 @@ export function useStorePages(id: string) {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
   });
+}
+
+export function useChangeTheme(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (theme: string) => api.post(`/stores/${id}/theme`, { theme }),
+    {
+      onSuccess() {
+        queryClient.invalidateQueries(['/stores', id]);
+      },
+    }
+  );
 }

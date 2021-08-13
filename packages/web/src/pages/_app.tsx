@@ -1,10 +1,21 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme, Theme } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import type { QueryFunction, QueryKey } from 'react-query';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Layout from '../components/layout';
 import api from '../lib/api';
+
+const theme = extendTheme({
+  styles: {
+    global: {
+      '.monaco-editor': {
+        roundedTopRight: 'md',
+        roundedBottomRight: 'md',
+      },
+    },
+  },
+});
 
 const defaultQueryFn: QueryFunction<unknown, QueryKey> = async ({
   queryKey,
@@ -32,7 +43,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
