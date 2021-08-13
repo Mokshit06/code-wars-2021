@@ -197,7 +197,7 @@ function Editor({
       height="60vh"
       width="60vw"
       theme="vs-dark"
-      path={`${page?.type}/${file}`}
+      path={`inmemory://model/${page.type}/${file}.tsx`}
       beforeMount={monaco => {
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
           noSyntaxValidation: true,
@@ -215,6 +215,8 @@ function Editor({
         editorRef.current = editor;
         (AutoTypings as any).create(monaco, editor, {
           sourceCache: new LocalStorageCache(),
+          debounceDuration: 2000,
+          packageRecursionDepth: 10,
         });
       }}
     />
