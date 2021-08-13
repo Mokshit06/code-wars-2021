@@ -101,10 +101,9 @@ router.get('/:id/pages', ensureAuthenticated, async (req, res) => {
 
 const THEMES_FOLDER = path.join(process.cwd(), 'src', 'themes');
 
-router.post('/:id/pages', ensureAuthenticated, async (req, res) => {
+router.post('/:id/theme', ensureAuthenticated, async (req, res) => {
   const themes = await fs.readdir(THEMES_FOLDER);
   const theme = req.body.theme as string;
-  const pageType = req.body.pageType as PageType;
 
   if (!themes.includes(theme)) {
     return res.status(400).json({
@@ -112,35 +111,41 @@ router.post('/:id/pages', ensureAuthenticated, async (req, res) => {
     });
   }
 
-  if (!Object.keys(PageType).includes(pageType)) {
-    return res.status(400).json({
-      message: 'Invalid page type',
+  const promises = Object.values(PageType).map(async pageType => {
+    const pageTypeLower = pageType.toLowerCase();
+
+    const [template, css, js] = await Promise.all([
+      fs.readFile(
+        path.join(THEMES_FOLDER, theme, pageTypeLower, 'template.hbs'),
+        'utf8'
+      ),
+      fs.readFile(
+        path.join(THEMES_FOLDER, theme, pageTypeLower, 'style.css'),
+        'utf8'
+      ),
+      fs.readFile(
+        path.join(THEMES_FOLDER, theme, pageTypeLower, 'script.js'),
+        'utf8'
+      ),
+    ]);
+
+    const compiledTemplate = Handlebars.precompile(template) as string;
+    const compiledJs = await build(js);
+
+    const page = await prisma.page.create({
+      data: {
+        css,
+        rawJs: js,
+        rawTemplate: template,
+        compiledTemplate,
+        compiledJs,
+        storeId: req.params.id,
+        type: pageType,
+      },
     });
-  }
-
-  const [template, css, js] = await Promise.all([
-    fs.readFile(
-      path.join(THEMES_FOLDER, theme, pageType, 'template.hbs'),
-      'utf8'
-    ),
-    fs.readFile(path.join(THEMES_FOLDER, theme, pageType, 'style.css'), 'utf8'),
-    fs.readFile(path.join(THEMES_FOLDER, theme, pageType, 'script.js'), 'utf8'),
-  ]);
-
-  const compiledTemplate = Handlebars.precompile(template) as string;
-  const compiledJs = await build(js);
-
-  const page = await prisma.page.create({
-    data: {
-      css,
-      rawJs: js,
-      rawTemplate: template,
-      compiledTemplate,
-      compiledJs,
-      storeId: req.params.id,
-      type: req.body.pageType as PageType,
-    },
   });
+
+  await Promise.all(promises);
 
   res.status(201).json({
     message: 'Page created',
