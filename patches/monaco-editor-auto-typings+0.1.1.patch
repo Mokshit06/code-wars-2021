@@ -1,0 +1,114 @@
+diff --git a/node_modules/monaco-editor-auto-typings/lib/AutoTypings.js b/node_modules/monaco-editor-auto-typings/lib/AutoTypings.js
+index 62f7541..8c53c6e 100644
+--- a/node_modules/monaco-editor-auto-typings/lib/AutoTypings.js
++++ b/node_modules/monaco-editor-auto-typings/lib/AutoTypings.js
+@@ -78,36 +78,38 @@ var __values = (this && this.__values) || function(o) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AutoTypings = void 0;
+-var monaco_editor_1 = require("monaco-editor");
++// var monaco_editor_1 = require("monaco-editor");
+ var DummySourceCache_1 = require("./DummySourceCache");
+ var UnpkgSourceResolver_1 = require("./UnpkgSourceResolver");
+ var ImportResolver_1 = require("./ImportResolver");
+ var path = __importStar(require("path"));
+-var monaco = __importStar(require("monaco-editor"));
++// var monaco = __importStar(require("monaco-editor"));
+ var invokeUpdate_1 = require("./invokeUpdate");
+ var RecursionDepth_1 = require("./RecursionDepth");
+ var AutoTypings = /** @class */ (function () {
+-    function AutoTypings(editor, options) {
++    function AutoTypings(monaco, editor, options) {
+         var _this = this;
+         this.editor = editor;
+         this.options = options;
+         this.disposables = [];
+-        this.importResolver = new ImportResolver_1.ImportResolver(options);
++        console.log(options)
++        console.log(ImportResolver_1.ImportResolver)
++        this.importResolver = new ImportResolver_1.ImportResolver(options, monaco);
+         var changeModelDisposable = editor.onDidChangeModelContent(function (e) {
+             _this.debouncedResolveContents();
+         });
+         this.disposables.push(changeModelDisposable);
+         this.resolveContents();
+         if (!options.dontAdaptEditorOptions) {
+-            monaco.languages.typescript.typescriptDefaults.setCompilerOptions(__assign(__assign({}, monaco.languages.typescript.typescriptDefaults.getCompilerOptions()), { moduleResolution: monaco_editor_1.languages.typescript.ModuleResolutionKind.NodeJs, allowSyntheticDefaultImports: true }));
++            monaco.languages.typescript.typescriptDefaults.setCompilerOptions(__assign(__assign({}, monaco.languages.typescript.typescriptDefaults.getCompilerOptions()), { moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs, allowSyntheticDefaultImports: true }));
+         }
+     }
+-    AutoTypings.create = function (editor, options) {
++    AutoTypings.create = function (monaco, editor, options) {
+         var _a;
+         if ((options === null || options === void 0 ? void 0 : options.shareCache) && options.sourceCache && !AutoTypings.sharedCache) {
+             AutoTypings.sharedCache = options.sourceCache;
+         }
+-        return new AutoTypings(editor, __assign({ fileRootPath: 'inmemory://model/', onlySpecifiedPackages: false, preloadPackages: false, shareCache: false, dontAdaptEditorOptions: false, dontRefreshModelValueAfterResolvement: false, sourceCache: (_a = AutoTypings.sharedCache) !== null && _a !== void 0 ? _a : new DummySourceCache_1.DummySourceCache(), sourceResolver: new UnpkgSourceResolver_1.UnpkgSourceResolver(), debounceDuration: 4000, fileRecursionDepth: 10, packageRecursionDepth: 3 }, options));
++        return new AutoTypings(monaco, editor, __assign({ fileRootPath: 'inmemory://model/', onlySpecifiedPackages: false, preloadPackages: false, shareCache: false, dontAdaptEditorOptions: false, dontRefreshModelValueAfterResolvement: false, sourceCache: (_a = AutoTypings.sharedCache) !== null && _a !== void 0 ? _a : new DummySourceCache_1.DummySourceCache(), sourceResolver: new UnpkgSourceResolver_1.UnpkgSourceResolver(), debounceDuration: 4000, fileRecursionDepth: 10, packageRecursionDepth: 3 }, options));
+     };
+     AutoTypings.prototype.dispose = function () {
+         var e_1, _a;
+diff --git a/node_modules/monaco-editor-auto-typings/lib/ImportResolver.js b/node_modules/monaco-editor-auto-typings/lib/ImportResolver.js
+index 6f963d4..7b5774e 100644
+--- a/node_modules/monaco-editor-auto-typings/lib/ImportResolver.js
++++ b/node_modules/monaco-editor-auto-typings/lib/ImportResolver.js
+@@ -94,16 +94,18 @@ var __read = (this && this.__read) || function (o, n) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.ImportResolver = void 0;
+-var monaco = __importStar(require("monaco-editor/esm/vs/editor/editor.api"));
+-var editor_api_1 = require("monaco-editor/esm/vs/editor/editor.api");
++// var monaco = __importStar(require("monaco-editor/esm/vs/editor/editor.api"));
++// var editor_api_1 = require("monaco-editor/esm/vs/editor/editor.api");
+ var DependencyParser_1 = require("./DependencyParser");
+ var ImportResourcePath_1 = require("./ImportResourcePath");
+ var path = __importStar(require("path"));
+ var invokeUpdate_1 = require("./invokeUpdate");
+ var RecursionDepth_1 = require("./RecursionDepth");
+ var ImportResolver = /** @class */ (function () {
+-    function ImportResolver(options) {
++    function ImportResolver(options, monaco) {
+         var e_1, _a;
++        this.monaco = monaco;
++        // this.editor = editor;
+         this.options = options;
+         this.loadedFiles = [];
+         this.dependencyParser = new DependencyParser_1.DependencyParser();
+@@ -228,7 +230,7 @@ var ImportResolver = /** @class */ (function () {
+                     case 0: return [4 /*yield*/, this.loadSourceFileContents(importResource)];
+                     case 1:
+                         _a = _b.sent(), source = _a.source, at = _a.at;
+-                        this.createModel(source, editor_api_1.Uri.parse(this.options.fileRootPath + path.join("node_modules/" + importResource.packageName, at)));
++                        this.createModel(source, this.monaco.Uri.parse(this.options.fileRootPath + path.join("node_modules/" + importResource.packageName, at)));
+                         return [4 /*yield*/, this.resolveImportsInFile(source, {
+                                 kind: 'relative-in-package',
+                                 packageName: importResource.packageName,
+@@ -277,7 +279,7 @@ var ImportResolver = /** @class */ (function () {
+                         pkg = JSON.parse(pkgJson);
+                         if (!(pkg.typings || pkg.types)) return [3 /*break*/, 4];
+                         typings = pkg.typings || pkg.types;
+-                        this.createModel(pkgJson, editor_api_1.Uri.parse(this.options.fileRootPath + "node_modules/" + importResource.packageName + pkgJsonSubpath + "/package.json"));
++                        this.createModel(pkgJson, this.monaco.Uri.parse(this.options.fileRootPath + "node_modules/" + importResource.packageName + pkgJsonSubpath + "/package.json"));
+                         invokeUpdate_1.invokeUpdate({
+                             type: 'LookedUpPackage',
+                             package: importResource.packageName,
+@@ -302,7 +304,7 @@ var ImportResolver = /** @class */ (function () {
+                             pkg_1 = JSON.parse(pkgJsonTypings);
+                             if (pkg_1.typings || pkg_1.types) {
+                                 typings = pkg_1.typings || pkg_1.types;
+-                                this.createModel(pkgJsonTypings, editor_api_1.Uri.parse(this.options.fileRootPath + "node_modules/" + typingPackageName + "/package.json"));
++                                this.createModel(pkgJsonTypings, this.monaco.Uri.parse(this.options.fileRootPath + "node_modules/" + typingPackageName + "/package.json"));
+                                 invokeUpdate_1.invokeUpdate({
+                                     type: 'LookedUpPackage',
+                                     package: typingPackageName,
+@@ -440,8 +442,8 @@ var ImportResolver = /** @class */ (function () {
+     };
+     ImportResolver.prototype.createModel = function (source, uri) {
+         uri = uri.with({ path: uri.path.replace('@types/', '') });
+-        if (!monaco.editor.getModel(uri)) {
+-            monaco.editor.createModel(source, 'typescript', uri);
++        if (!this.monaco.editor.getModel(uri)) {
++            this.monaco.editor.createModel(source, 'typescript', uri);
+             this.newImportsResolved = true;
+         }
+     };

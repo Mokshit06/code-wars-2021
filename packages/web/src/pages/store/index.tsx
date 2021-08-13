@@ -1,3 +1,4 @@
+import { useStoreProducts } from '@/hooks/store';
 import {
   Box,
   Button,
@@ -33,6 +34,9 @@ const tabProps: TabProps = {
 };
 
 export default function Store() {
+  const { data: storeProducts } = useStoreProducts();
+
+
   return (
     <Flex flex={1} width="full" alignItems="center" justifyContent="center">
       <Head>
@@ -62,11 +66,23 @@ export default function Store() {
           </TabList>
           <TabPanels width="100%" textAlign="left">
             <TabPanel minHeight="16rem" maxWidth="25rem" padding="1.5rem 2rem">
-              <Text as="h3" mb="8px" fontSize="lg" fontWeight="500">
-                Add your first product
-              </Text>
-              <Text>Add the first product in your new store.</Text>
-              <Button my="1.5rem">Add first product</Button>
+              {storeProducts?.length ? (
+                <>
+                  <Text as="h3" mb="8px" fontSize="lg" fontWeight="500">
+                    You’ve added a product
+                  </Text>
+                  <Text>Add more products or move on to another tip.</Text>
+                  <Button my="1.5rem">Add another product</Button>
+                </>
+              ) : (
+                <>
+                  <Text as="h3" mb="8px" fontSize="lg" fontWeight="500">
+                    Add your first product
+                  </Text>
+                  <Text>Add the first product in your new store.</Text>
+                  <Button my="1.5rem" as="a" href="products/create">Add first product</Button>
+                </>
+              )}
             </TabPanel>
             <TabPanel minHeight="16rem" maxWidth="25rem" padding="1.5rem 2rem">
               <Text as="h3" mb="8px" fontSize="lg" fontWeight="500">
@@ -76,7 +92,7 @@ export default function Store() {
                 Choose a theme and add your logo, colors, and images to reflect
                 your brand.
               </Text>
-              <Button my="1.5rem">Customize theme</Button>
+              <Button my="1.5rem" as="a" href="products/create">Customize theme</Button>
             </TabPanel>
           </TabPanels>
         </Tabs>

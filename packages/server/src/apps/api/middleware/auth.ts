@@ -16,6 +16,6 @@ export const ensureGuest: RequestHandler = (req, res, next) => {
   }
 
   res.status(403).json({
-    message: 'Not Authorized',
+    message: 'Not a guest',
   });
 };

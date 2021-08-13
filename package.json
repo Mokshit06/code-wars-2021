@@ -10,9 +10,11 @@
   "scripts": {
     "server": "yarn workspace server dev",
     "web": "yarn workspace web dev",
-    "dev": "concurrently \"yarn server\" \"yarn web\""
+    "dev": "concurrently \"yarn server\" \"yarn web\"",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
-    "concurrently": "^6.2.1"
+    "concurrently": "^6.2.1",
+    "patch-package": "^6.4.7"
   }
 }
