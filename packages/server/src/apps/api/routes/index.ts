@@ -5,6 +5,6 @@ import storeRouter from './store';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/store', storeRouter);
+router.use('/stores', storeRouter);
 
 export default router;

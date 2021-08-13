@@ -10,7 +10,8 @@ const defaultQueryFn: QueryFunction<unknown, QueryKey> = async ({
   queryKey,
 }) => {
   try {
-    const { data } = await api.get(queryKey[0] as string);
+    console.log({ queryKey });
+    const { data } = await api.get(queryKey.join('/'));
     return data;
   } catch (error) {
     throw new Error(error?.response?.data?.message || error);

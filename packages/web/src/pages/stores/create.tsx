@@ -61,7 +61,7 @@ export default function CreateStore() {
         boxShadow="lg"
       >
         <Box my={2} textAlign="center">
-          <Heading>Create your store</Heading>
+          <Heading fontWeight="400">Create your store</Heading>
         </Box>
         <Box mt={4}>
           <Formik

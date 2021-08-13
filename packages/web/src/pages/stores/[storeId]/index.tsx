@@ -15,6 +15,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 const selectedStyle: CSSObject = {
   bg: 'white',
@@ -34,8 +35,9 @@ const tabProps: TabProps = {
 };
 
 export default function Store() {
-  const { data: storeProducts } = useStoreProducts();
-
+  const router = useRouter();
+  const storeId = router.query.storeId as string;
+  const { data: storeProducts } = useStoreProducts(storeId);
 
   return (
     <Flex flex={1} width="full" alignItems="center" justifyContent="center">
@@ -72,7 +74,13 @@ export default function Store() {
                     You’ve added a product
                   </Text>
                   <Text>Add more products or move on to another tip.</Text>
-                  <Button my="1.5rem">Add another product</Button>
+                  <Button
+                    my="1.5rem"
+                    as="a"
+                    href={`/stores/${storeId}/products/create`}
+                  >
+                    Add another product
+                  </Button>
                 </>
               ) : (
                 <>
@@ -80,7 +88,13 @@ export default function Store() {
                     Add your first product
                   </Text>
                   <Text>Add the first product in your new store.</Text>
-                  <Button my="1.5rem" as="a" href="products/create">Add first product</Button>
+                  <Button
+                    my="1.5rem"
+                    as="a"
+                    href={`/stores/${storeId}/products/create`}
+                  >
+                    Add first product
+                  </Button>
                 </>
               )}
             </TabPanel>
@@ -92,7 +106,9 @@ export default function Store() {
                 Choose a theme and add your logo, colors, and images to reflect
                 your brand.
               </Text>
-              <Button my="1.5rem" as="a" href="products/create">Customize theme</Button>
+              <Button my="1.5rem" as="a" href="products/create">
+                Customize theme
+              </Button>
             </TabPanel>
           </TabPanels>
         </Tabs>

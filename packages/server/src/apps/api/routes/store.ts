@@ -92,7 +92,7 @@ router.get('/:id/customers', ensureAuthenticated, async (req, res) => {
 router.get('/:id/pages', ensureAuthenticated, async (req, res) => {
   if (!req.user) return;
 
-  const [pages] = await prisma.page.findMany({
+  const pages = await prisma.page.findMany({
     where: { storeId: req.params.id },
   });
 
