@@ -14,5 +14,10 @@ export function useStoreProducts(id: string) {
 }
 
 export function useStorePages(id: string) {
-  return useQuery<Page[]>(['/stores', id, 'pages'], { enabled: !!id });
+  return useQuery<Page[]>(['/stores', id, 'pages'], {
+    enabled: !!id,
+    retry: 0,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
 }
