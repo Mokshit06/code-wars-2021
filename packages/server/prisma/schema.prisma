@@ -66,9 +66,17 @@ model Store {
   customers   StoreUser[]
 }
 
+enum PageType {
+  HOME_PAGE
+  PRODUCTS_LIST_PAGE
+  SINGLE_PRODUCT_PAGE
+  CART_PAGE
+}
+
 model Page {
   id               String   @id @default(uuid())
-  path             String
+  // path             String
+  type             PageType
   rawTemplate      String
   compiledTemplate String?
   css              String
@@ -120,6 +128,15 @@ model OrderProduct {
   orderId   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Theme {
+  id       String @id @default(uuid())
+  name     String
+  image    String
+  template String
+  css      String
+  js       String
 }
 
 model Session {

@@ -4,8 +4,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import * as yup from 'yup';
-import Field from '../../components/field';
-import api from '../../lib/api';
+import Field from '@/components/field';
+import api from '@/lib/api';
 
 const initialValues = {
   name: '',

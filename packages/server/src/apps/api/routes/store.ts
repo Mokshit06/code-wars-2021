@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import prisma from '../../../lib/prisma';
-import type { Product, Store } from '@prisma/client';
+import { PageType, Product, Store } from '@prisma/client';
 import { ensureAuthenticated } from '../middleware/auth';
 import slugify from 'slugify';
+import { promises as fs } from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
+import esbuild from 'esbuild';
 
 // replace `_` with `-`
 slugify.extend({ _: '-' });
@@ -88,6 +92,57 @@ router.get('/:id/pages', ensureAuthenticated, async (req, res) => {
   });
 
   res.json(pages);
+});
+
+const THEMES_FOLDER = path.join(process.cwd(), 'src', 'themes');
+
+router.post('/:id/pages', ensureAuthenticated, async (req, res) => {
+  const themes = await fs.readdir(THEMES_FOLDER);
+  const theme = req.body.theme as string;
+  const pageType = req.body.pageType as PageType;
+
+  if (!themes.includes(theme)) {
+    return res.status(400).json({
+      message: "Theme doesn't exist",
+    });
+  }
+
+  if (!Object.keys(PageType).includes(pageType)) {
+    return res.status(400).json({
+      message: 'Invalid page type',
+    });
+  }
+
+  const [template, css, js] = await Promise.all([
+    fs.readFile(
+      path.join(THEMES_FOLDER, theme, pageType, 'template.hbs'),
+      'utf8'
+    ),
+    fs.readFile(path.join(THEMES_FOLDER, theme, pageType, 'style.css'), 'utf8'),
+    fs.readFile(path.join(THEMES_FOLDER, theme, pageType, 'script.js'), 'utf8'),
+  ]);
+
+  const compiledTemplate = Handlebars.precompile(template) as string;
+  const { code: compiledJs } = await esbuild.transform(js, {
+    loader: 'tsx',
+    minify: process.env.NODE_ENV === 'production',
+  });
+
+  const page = await prisma.page.create({
+    data: {
+      css,
+      rawJs: js,
+      rawTemplate: template,
+      compiledTemplate,
+      compiledJs,
+      storeId: req.params.id,
+      type: req.body.pageType as PageType,
+    },
+  });
+
+  res.status(201).json({
+    message: 'Page created',
+  });
 });
 
 router.post('/', ensureAuthenticated, async (req, res) => {
