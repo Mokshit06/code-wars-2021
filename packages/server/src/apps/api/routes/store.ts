@@ -7,6 +7,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import Handlebars from 'handlebars';
 import esbuild from 'esbuild';
+import build from '../../../utils/build';
 
 // replace `_` with `-`
 slugify.extend({ _: '-' });
@@ -123,10 +124,7 @@ router.post('/:id/pages', ensureAuthenticated, async (req, res) => {
   ]);
 
   const compiledTemplate = Handlebars.precompile(template) as string;
-  const { code: compiledJs } = await esbuild.transform(js, {
-    loader: 'tsx',
-    minify: process.env.NODE_ENV === 'production',
-  });
+  const compiledJs = await build(js);
 
   const page = await prisma.page.create({
     data: {

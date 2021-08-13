@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@prisma/client": "^2.29.0",
+    "axios": "^0.21.1",
     "connect-pg-simple": "^6.2.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
