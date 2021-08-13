@@ -3,12 +3,15 @@ import express from 'express';
 import store from './apps/store';
 import api from './apps/api';
 import cors from 'cors';
-import { User as PrismaUser } from '@prisma/client';
+import pgSession from 'connect-pg-simple';
+import expressSession from 'express-session';
+import { StoreUser, User as PrismaUser } from '@prisma/client';
 
 declare global {
   namespace Express {
     export interface Request {
       store?: string;
+      storeUser?: StoreUser;
     }
 
     export interface User extends PrismaUser {}
@@ -23,6 +26,18 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
+
+const PgStore = pgSession(expressSession);
+const sessionMiddleware = expressSession({
+  secret: process.env.COOKIE_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  store: new PgStore(),
+});
+
+app.use(sessionMiddleware);
 
 app.use((req, res) => {
   const { subdomains } = req;

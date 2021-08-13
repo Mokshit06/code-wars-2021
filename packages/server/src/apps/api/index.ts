@@ -1,25 +1,11 @@
 import { SocialProvider, User } from '@prisma/client';
-import pgSession from 'connect-pg-simple';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
-import expressSession from 'express-session';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import prisma from '../../lib/prisma';
 import routes from './routes';
 const app = express();
-
-app.use(express.json());
-
-const PgStore = pgSession(expressSession);
-const sessionMiddleware = expressSession({
-  secret: process.env.COOKIE_SECRET!,
-  resave: false,
-  saveUninitialized: false,
-  store: new PgStore(),
-});
-
-app.use(sessionMiddleware);
 
 passport.use(
   new GoogleStrategy(
