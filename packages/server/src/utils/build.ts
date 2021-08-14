@@ -62,7 +62,7 @@ export default async function build(code: string) {
     entryPoints: ['__ENTRY__.tsx'],
     bundle: true,
     write: false,
-    minify: process.env.NODE_ENV === 'production',
+    minify: true,
     define: { 'process.env.NODE_ENV': JSON.stringify('production') },
     plugins: [httpPlugin, virtualFs(code)],
   });

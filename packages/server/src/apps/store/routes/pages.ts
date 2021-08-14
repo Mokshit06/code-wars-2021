@@ -50,7 +50,26 @@ router.get('/*', async (req, res) => {
         },
       }) as string;
       html = html.replace('/* INJECT CSS */', page.css);
-      html = html.replace('// INJECT JAVASCRIPT', page.compiledJs!);
+      html = html.replace(
+        '// INJECT JAVASCRIPT',
+        `
+      window.pageData = (${JSON.stringify(pageData)});
+      window.cart = {
+        addToCart(product) {
+          const cart = [...this.getCart(), product];
+          localStorage.setItem('cart', JSON.stringify(cart))
+        },
+        getCart() {
+          return JSON.parse(localStorage.getItem('cart')) || []
+        },
+        removeFromCart(productId) {
+          const cart = this.getCart().filter(p => p.id !== productId);
+          localStorage.setItem('cart', JSON.stringify(cart))
+        }
+      };
+      ${page.compiledJs}
+      `
+      );
 
       res.send(html);
     } catch (error) {
