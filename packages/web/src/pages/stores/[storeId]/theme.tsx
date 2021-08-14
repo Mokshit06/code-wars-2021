@@ -1,4 +1,9 @@
-import { useChangeTheme, useStore, useStorePages } from '@/hooks/store';
+import {
+  useChangeTheme,
+  useStore,
+  useStorePages,
+  useUpdateTheme,
+} from '@/hooks/store';
 import {
   Box,
   Button,
@@ -35,6 +40,8 @@ const PAGE_TYPE_TO_NAME: Record<PageType, string> = {
   HOME_PAGE: 'Home',
   PRODUCTS_LIST_PAGE: 'Products List',
   SINGLE_PRODUCT_PAGE: 'Single Product',
+  LOGIN_PAGE: 'Login',
+  REGISTRATION_PAGE: 'Register',
 };
 
 export default function StoreDesign() {
@@ -48,6 +55,7 @@ export default function StoreDesign() {
   );
   const currentPage = pages.find(p => p.type === currentPageType);
   const [currentFile, setCurrentFile] = useState<PageFile>('template.hbs');
+  const updateTheme = useUpdateTheme(storeId);
   const handleSave = useCallback(
     (value: string) => {
       setPages(pages =>
@@ -96,15 +104,47 @@ export default function StoreDesign() {
     <Flex flex={1} width="full" alignItems="center" justifyContent="center">
       {initialPages?.length ? (
         currentPage ? (
-          <Flex boxShadow="md" rounded="md">
-            <FileMenu
-              currentFile={currentFile}
-              currentPageType={currentPageType}
-              pages={pages}
-              onFileChange={handleChangeFile}
-            />
-            <Editor page={currentPage} file={currentFile} onSave={handleSave} />
-          </Flex>
+          <Box>
+            <Flex
+              justifyContent="space-between"
+              p="4"
+              bg="gray.50"
+              borderTopLeftRadius="md"
+              alignItems="center"
+            >
+              <Heading as="h3" fontSize="xl" fontWeight="500">
+                Theme Editor
+              </Heading>
+              <Button
+                onClick={() => {
+                  updateTheme.mutate(
+                    pages.map(page => ({
+                      type: page.type,
+                      css: page['style.css'],
+                      js: page['script.tsx'],
+                      template: page['template.hbs'],
+                    }))
+                  );
+                }}
+              >
+                Update Theme
+              </Button>
+            </Flex>
+            <Divider />
+            <Flex boxShadow="md" rounded="md">
+              <FileMenu
+                currentFile={currentFile}
+                currentPageType={currentPageType}
+                pages={pages}
+                onFileChange={handleChangeFile}
+              />
+              <Editor
+                page={currentPage}
+                file={currentFile}
+                onSave={handleSave}
+              />
+            </Flex>
+          </Box>
         ) : null
       ) : (
         <ThemePicker />
@@ -119,19 +159,6 @@ function ThemePicker() {
   const storeId = router.query.storeId as string;
   const { data: store } = useStore(storeId);
   const changeTheme = useChangeTheme(storeId);
-  const toast = useToast();
-
-  useEffect(() => {
-    if (changeTheme.isSuccess) {
-      toast({
-        title: 'Theme updated',
-        description: `${store?.name}'s theme has been updated!`,
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  }, [changeTheme.isSuccess, toast, store]);
 
   return (
     <Flex direction="column">
@@ -200,7 +227,7 @@ function Editor({
       path={`inmemory://model/${page.type}/${file}.tsx`}
       beforeMount={monaco => {
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-          noSyntaxValidation: true,
+          // noSyntaxValidation: true,
         });
 
         monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -238,12 +265,6 @@ function FileMenu({
 }: FileMenuProps) {
   return (
     <Box overflow="auto" height="60vh" w="15vw" minWidth="10rem">
-      <Box p="4" bg="gray.50" borderTopLeftRadius="md">
-        <Heading as="h3" fontSize="xl" fontWeight="500">
-          Pages
-        </Heading>
-      </Box>
-      <Divider />
       <VStack spacing={2} w="full" alignItems="flex-start" p="3">
         {pages.map(page => (
           <Folder

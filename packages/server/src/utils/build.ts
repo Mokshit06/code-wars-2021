@@ -58,7 +58,6 @@ const virtualFs = (code: string): Plugin => ({
 });
 
 export default async function build(code: string) {
-  console.time('build');
   const result = await esbuild.build({
     entryPoints: ['__ENTRY__.tsx'],
     bundle: true,
@@ -67,7 +66,6 @@ export default async function build(code: string) {
     define: { 'process.env.NODE_ENV': JSON.stringify('production') },
     plugins: [httpPlugin, virtualFs(code)],
   });
-  console.timeEnd('build');
 
   return result.outputFiles[0].text;
 }

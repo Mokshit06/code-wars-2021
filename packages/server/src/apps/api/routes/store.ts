@@ -5,7 +5,7 @@ import { ensureAuthenticated } from '../middleware/auth';
 import slugify from 'slugify';
 import { promises as fs } from 'fs';
 import path from 'path';
-import Handlebars from 'handlebars';
+import Handlebars, { template } from 'handlebars';
 import esbuild from 'esbuild';
 import build from '../../../utils/build';
 
@@ -97,6 +97,46 @@ router.get('/:id/pages', ensureAuthenticated, async (req, res) => {
   });
 
   res.json(pages);
+});
+
+router.put('/:id/theme', ensureAuthenticated, async (req, res) => {
+  const data = req.body.pages as Array<{
+    template: string;
+    css: string;
+    js: string;
+    type: PageType;
+  }>;
+  const promises = data.map(async page => {
+    const dbPage = await prisma.page.findFirst({
+      where: {
+        storeId: req.params.id,
+        type: page.type,
+      },
+    });
+    const compiledTemplate = Handlebars.precompile(page.template) as string;
+    const compiledJs =
+      page.js === dbPage?.rawJs ? dbPage.compiledJs : await build(page.js);
+
+    await prisma.page.updateMany({
+      where: {
+        storeId: req.params.id,
+        type: page.type,
+      },
+      data: {
+        rawJs: page.js,
+        css: page.css,
+        compiledJs,
+        compiledTemplate,
+        rawTemplate: page.template,
+      },
+    });
+  });
+
+  await Promise.all(promises);
+
+  res.json({
+    message: 'Theme updated',
+  });
 });
 
 const THEMES_FOLDER = path.join(process.cwd(), 'src', 'themes');
