@@ -1,4 +1,5 @@
 import ProductForm from '@/components/product-form';
+import Sidebar from '@/components/sidebar';
 import api from '@/lib/api';
 import { Box, Flex, Heading, useToast } from '@chakra-ui/react';
 import { Formik, FormikHelpers } from 'formik';
@@ -49,32 +50,35 @@ export default function CreateProduct() {
   };
 
   return (
-    <Flex flex={1} width="full" alignItems="center" justifyContent="center">
-      <Head>
-        <title>Create Product</title>
-      </Head>
-      <Box
-        m={8}
-        borderWidth={1}
-        p={8}
-        width="full"
-        maxWidth={{ base: '380px', sm: '600px', md: '680px' }}
-        borderRadius={4}
-        textAlign="center"
-        boxShadow="lg"
-      >
-        <Box my={2} textAlign="center">
-          <Heading fontWeight="400">Add a Product</Heading>
+    <Flex flex={1}>
+      <Sidebar storeId={storeId} />
+      <Flex flex={1} width="full" alignItems="center" justifyContent="center">
+        <Head>
+          <title>Create Product</title>
+        </Head>
+        <Box
+          m={8}
+          borderWidth={1}
+          p={8}
+          width="full"
+          maxWidth={{ base: '380px', sm: '600px', md: '680px' }}
+          borderRadius={4}
+          textAlign="center"
+          boxShadow="lg"
+        >
+          <Box my={2} textAlign="center">
+            <Heading fontWeight="400">Add a Product</Heading>
+          </Box>
+          <Box mt={4}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={createProductSchema}
+              component={props => <ProductForm {...props} type="create" />}
+            />
+          </Box>
         </Box>
-        <Box mt={4}>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={createProductSchema}
-            component={props => <ProductForm {...props} type="create" />}
-          />
-        </Box>
-      </Box>
+      </Flex>
     </Flex>
   );
 }

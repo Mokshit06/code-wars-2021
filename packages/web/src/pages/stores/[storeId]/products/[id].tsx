@@ -1,4 +1,5 @@
 import ProductForm, { Values } from '@/components/product-form';
+import Sidebar from '@/components/sidebar';
 import { useStoreProduct } from '@/hooks/store';
 import api from '@/lib/api';
 import { Box, Flex, Heading, useToast } from '@chakra-ui/react';
@@ -58,32 +59,35 @@ export default function UpdateProduct() {
   };
 
   return (
-    <Flex flex={1} width="full" alignItems="center" justifyContent="center">
-      <Head>
-        <title>Update Product</title>
-      </Head>
-      <Box
-        m={8}
-        borderWidth={1}
-        p={8}
-        width="full"
-        maxWidth={{ base: '380px', sm: '600px', md: '680px' }}
-        borderRadius={4}
-        textAlign="center"
-        boxShadow="lg"
-      >
-        <Box my={2} textAlign="center">
-          <Heading fontWeight="400">Update {product?.name}</Heading>
+    <Flex flex={1}>
+      <Sidebar storeId={storeId} />
+      <Flex flex={1} width="full" alignItems="center" justifyContent="center">
+        <Head>
+          <title>Update Product</title>
+        </Head>
+        <Box
+          m={8}
+          borderWidth={1}
+          p={8}
+          width="full"
+          maxWidth={{ base: '380px', sm: '600px', md: '680px' }}
+          borderRadius={4}
+          textAlign="center"
+          boxShadow="lg"
+        >
+          <Box my={2} textAlign="center">
+            <Heading fontWeight="400">Update {product?.name}</Heading>
+          </Box>
+          <Box mt={4}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              validationSchema={updateProductSchema}
+              component={props => <ProductForm {...props} type="update" />}
+            />
+          </Box>
         </Box>
-        <Box mt={4}>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={updateProductSchema}
-            component={props => <ProductForm {...props} type="update" />}
-          />
-        </Box>
-      </Box>
+      </Flex>
     </Flex>
   );
 }

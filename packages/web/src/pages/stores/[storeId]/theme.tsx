@@ -1,3 +1,4 @@
+import Sidebar from '@/components/sidebar';
 import {
   useChangeTheme,
   useStore,
@@ -101,54 +102,57 @@ export default function StoreDesign() {
   }
 
   return (
-    <Flex flex={1} width="full" alignItems="center" justifyContent="center">
-      {initialPages?.length ? (
-        currentPage ? (
-          <Box>
-            <Flex
-              justifyContent="space-between"
-              p="4"
-              bg="gray.50"
-              borderTopLeftRadius="md"
-              alignItems="center"
-            >
-              <Heading as="h3" fontSize="xl" fontWeight="500">
-                Theme Editor
-              </Heading>
-              <Button
-                onClick={() => {
-                  updateTheme.mutate(
-                    pages.map(page => ({
-                      type: page.type,
-                      css: page['style.css'],
-                      js: page['script.tsx'],
-                      template: page['template.hbs'],
-                    }))
-                  );
-                }}
+    <Flex flex={1}>
+      <Sidebar storeId={storeId} />
+      <Flex flex={1} width="full" alignItems="center" justifyContent="center">
+        {initialPages?.length ? (
+          currentPage ? (
+            <Box>
+              <Flex
+                justifyContent="space-between"
+                p="4"
+                bg="gray.50"
+                borderTopLeftRadius="md"
+                alignItems="center"
               >
-                Update Theme
-              </Button>
-            </Flex>
-            <Divider />
-            <Flex boxShadow="md" rounded="md">
-              <FileMenu
-                currentFile={currentFile}
-                currentPageType={currentPageType}
-                pages={pages}
-                onFileChange={handleChangeFile}
-              />
-              <Editor
-                page={currentPage}
-                file={currentFile}
-                onSave={handleSave}
-              />
-            </Flex>
-          </Box>
-        ) : null
-      ) : (
-        <ThemePicker />
-      )}
+                <Heading as="h3" fontSize="xl" fontWeight="500">
+                  Theme Editor
+                </Heading>
+                <Button
+                  onClick={() => {
+                    updateTheme.mutate(
+                      pages.map(page => ({
+                        type: page.type,
+                        css: page['style.css'],
+                        js: page['script.tsx'],
+                        template: page['template.hbs'],
+                      }))
+                    );
+                  }}
+                >
+                  Update Theme
+                </Button>
+              </Flex>
+              <Divider />
+              <Flex boxShadow="md" rounded="md">
+                <FileMenu
+                  currentFile={currentFile}
+                  currentPageType={currentPageType}
+                  pages={pages}
+                  onFileChange={handleChangeFile}
+                />
+                <Editor
+                  page={currentPage}
+                  file={currentFile}
+                  onSave={handleSave}
+                />
+              </Flex>
+            </Box>
+          ) : null
+        ) : (
+          <ThemePicker />
+        )}
+      </Flex>
     </Flex>
   );
 }
