@@ -27,7 +27,7 @@ export default function Home() {
       overflow="hidden"
     >
       <Head>
-        <title>Home | Shopper</title>
+        <title>Home | Dukaan</title>
       </Head>
       {/* <Image
         src="assets/triangle.svg"
@@ -52,9 +52,9 @@ export default function Home() {
           flexDir="column"
           justifyContent="center"
         >
-          <Heading fontSize="3rem">Shopper</Heading>
+          <Heading fontSize="3rem">Dukaan</Heading>
           <Text fontSize="1.6rem" mt={6}>
-            The best e-commerce platform which to start your business online
+            The best e-commerce platform to start your business online
           </Text>
           <Button
             rightIcon={<FaRocket size="0.9rem" />}

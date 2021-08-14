@@ -15,6 +15,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
+import Head from 'next/head';
 import MonacoEditor from '@monaco-editor/react';
 import { PageType } from '@prisma/client';
 import type { editor } from 'monaco-editor';
@@ -103,6 +104,9 @@ export default function StoreDesign() {
 
   return (
     <Flex flex={1}>
+      <Head>
+        <title>Theme</title>
+      </Head>
       <Sidebar storeId={storeId} />
       <Flex flex={1} width="full" alignItems="center" justifyContent="center">
         {initialPages?.length ? (

@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       >
         <Flex align="center" mr={5}>
           <Heading mb={{ base: 3, sm: 0 }} as="h1" size="lg">
-            Shopper
+            Dukaan
           </Heading>
         </Flex>
 

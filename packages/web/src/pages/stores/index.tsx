@@ -1,15 +1,25 @@
 import Link from 'next/link';
 import { useStores } from '@/hooks/store';
-import { Box, Stack, Text, Flex, Heading } from '@chakra-ui/react';
+import { Box, Stack, Text, Flex, Heading, Button } from '@chakra-ui/react';
 
 export default function Stores() {
   const { data: stores } = useStores();
 
   return (
     <Flex flex={1} width="full" alignItems="center" justifyContent="center">
-      <Box>
-        <Heading>Stores</Heading>
+      <Box width="400px">
+        <Flex align="center" justifyContent="space-between">
+          <Heading>Stores</Heading>
+          <Link href="/stores/create" passHref>
+            <Button as="a">Create</Button>
+          </Link>
+        </Flex>
         <Stack mt={4} direction="column" spacing={4}>
+          {stores?.length == 0 && (
+            <Box py={4} px={6} rounded="md" boxShadow="md" w="400px">
+              No stores found
+            </Box>
+          )}
           {stores?.map(store => (
             <Link href={`/stores/${store.id}`} key={store.id} passHref>
               <Box as="a" py={4} px={6} rounded="md" boxShadow="md" w="400px">
