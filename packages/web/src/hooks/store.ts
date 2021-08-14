@@ -15,6 +15,12 @@ export function useStoreProducts(id: string) {
   return useQuery<Product[]>(['/stores', id, 'products'], { enabled: !!id });
 }
 
+export function useStoreProduct(storeId: string, productId: string) {
+  return useQuery<Product>(['/stores', storeId, 'products', productId], {
+    enabled: !!storeId && !!productId,
+  });
+}
+
 export function useStorePages(id: string) {
   return useQuery<Page[]>(['/stores', id, 'pages'], {
     enabled: !!id,

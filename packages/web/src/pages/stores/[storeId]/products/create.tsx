@@ -1,31 +1,7 @@
-import Field from '@/components/field';
+import ProductForm from '@/components/product-form';
 import api from '@/lib/api';
-import {
-  Box,
-  Button,
-  Flex,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Textarea,
-  useToast,
-} from '@chakra-ui/react';
-import {
-  FieldArray,
-  Form,
-  Formik,
-  FormikHelpers,
-  FormikProps,
-  useField,
-  useFormikContext,
-} from 'formik';
+import { Box, Flex, Heading, useToast } from '@chakra-ui/react';
+import { Formik, FormikHelpers } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -95,107 +71,11 @@ export default function CreateProduct() {
             initialValues={initialValues}
             onSubmit={handleSubmit}
             validationSchema={createProductSchema}
-            component={CreateProductForm}
+            component={props => <ProductForm {...props} type="create" />}
           />
         </Box>
       </Box>
     </Flex>
-  );
-}
-
-function CreateProductForm({ isSubmitting, isValid }: FormikProps<Values>) {
-  const [nameInput, nameMeta] = useField('name');
-  const [descriptionInput, descriptionMeta, descriptionHelpers] =
-    useField('description');
-  const [availabilityInput, availabilityMeta, availabilityHelpers] =
-    useField('availability');
-  const [skuInput, skuMeta] = useField('sku');
-  const [priceInput, priceMeta, priceHelpers] = useField('price');
-  const [imagesInput, imagesMeta] = useField('images');
-  const { values } = useFormikContext<Values>();
-
-  return (
-    <Form>
-      <Field meta={nameMeta} label="Name">
-        <Input {...nameInput} />
-      </Field>
-      <Field meta={descriptionMeta} label="Description">
-        <Textarea
-          value={descriptionInput.value}
-          onChange={e => {
-            descriptionHelpers.setValue(e.target.value);
-          }}
-        />
-      </Field>
-      <Field meta={availabilityMeta} label="Availability">
-        <NumberInput
-          min={0}
-          value={Number(availabilityInput.value || 0)}
-          onChange={(_, val) => availabilityHelpers.setValue(val)}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </Field>
-      <Field meta={skuMeta} label="SKU">
-        <Input {...skuInput} />
-      </Field>
-      <Field meta={priceMeta} label="Price">
-        <InputGroup>
-          <InputLeftAddon>₹</InputLeftAddon>
-          <NumberInput
-            w="full"
-            min={0}
-            value={Number(priceInput.value || 0)}
-            onChange={(_, val) => priceHelpers.setValue(val)}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </InputGroup>
-      </Field>
-      <FieldArray name="images">
-        {({ push }) => (
-          <Box mt={4}>
-            <FormLabel>Images</FormLabel>
-            <Box>
-              {values.images.map((image, index) => (
-                <ImageInput index={index} key={index} />
-              ))}
-            </Box>
-            <Box my={2}>
-              <Button onClick={() => push('')}>Add Image</Button>
-            </Box>
-          </Box>
-        )}
-      </FieldArray>
-      <Box my={6} mb={0} textAlign="right">
-        <Button
-          isLoading={isSubmitting}
-          disabled={isSubmitting || !isValid}
-          type="submit"
-          py={6}
-        >
-          Create product
-        </Button>
-      </Box>
-    </Form>
-  );
-}
-
-function ImageInput({ index }: { index: number }) {
-  const [imageInput, imageMeta] = useField(`images[${index}]`);
-
-  return (
-    <Field meta={imageMeta}>
-      <Input {...imageInput} />
-    </Field>
   );
 }
 

@@ -48,8 +48,6 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
 });
 
 router.get('/:id/products', ensureAuthenticated, async (req, res) => {
-  if (!req.user) return;
-
   const products = await prisma.product.findMany({
     where: { storeId: req.params.id },
   });
@@ -57,8 +55,51 @@ router.get('/:id/products', ensureAuthenticated, async (req, res) => {
   res.json(products);
 });
 
+router.get(
+  '/:id/products/:productId',
+  ensureAuthenticated,
+  async (req, res) => {
+    const product = await prisma.product.findUnique({
+      where: { id: req.params.productId },
+    });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found',
+      });
+    }
+
+    res.json(product);
+  }
+);
+
+router.put(
+  '/:id/products/:productId',
+  ensureAuthenticated,
+  async (req, res) => {
+    const data = req.body as Product;
+
+    await prisma.product.update({
+      where: { id: req.params.productId },
+      data: {
+        name: data.name,
+        price: data.price,
+        slug: slugify(data.name, { lower: true, strict: true }),
+        availability: data.availability,
+        description: data.description,
+        sku: data.sku,
+        storeId: req.params.id,
+        images: data.images,
+      },
+    });
+
+    res.json({
+      message: 'Product updated',
+    });
+  }
+);
+
 router.post('/:id/products', ensureAuthenticated, async (req, res) => {
-  if (!req.user) return;
   const data = req.body as Product;
 
   await prisma.product.create({
