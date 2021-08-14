@@ -27,6 +27,7 @@ export default function StoreProducts() {
             <Tr>
               <Th>ID</Th>
               <Th>Name</Th>
+              <Th>Email</Th>
               <Th>Phone Number</Th>
               <Th isNumeric>Orders</Th>
             </Tr>
@@ -36,6 +37,7 @@ export default function StoreProducts() {
               <Tr key={customer.id}>
                 <Td>{index + 1}</Td>
                 <Td>{customer.name}</Td>
+                <Td>{customer.email}</Td>
                 <Td>{customer.phoneNumber}</Td>
                 <Td isNumeric>{customer._count?.orders}</Td>
               </Tr>

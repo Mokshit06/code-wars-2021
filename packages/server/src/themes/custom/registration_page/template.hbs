@@ -1,0 +1,40 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>{{name}}</title>
+    <style>
+      /* INJECT CSS */
+    </style>
+  </head>
+  <body>
+    <h1>Register</h1>
+    {{#each message.errors as |error|}}
+      <p>{{error}}</p>
+    {{/each}}
+    <form method='post' action='/register'>
+      <label>
+        Name:
+        <input name='name' placeholder='Name' type='text' />
+      </label>
+      <label>
+        Phone Number
+        <input name='phoneNumber' placeholder='Phone Number' type='text' />
+      </label>
+      <label>
+        Email:
+        <input name='email' placeholder='Email' type='email' />
+      </label>
+      <label>
+        Password:
+        <input name='password' placeholder='Password' type='password' />
+      </label>
+      <button>Register</button>
+    </form>
+    <div>Already have an account? <a href='/login'>Login</a></div>
+    <script>
+      // INJECT JAVASCRIPT
+    </script>
+  </body>
+</html>

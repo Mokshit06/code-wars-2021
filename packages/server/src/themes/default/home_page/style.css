@@ -3,3 +3,113 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+html {
+  scroll-behavior: smooth;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+:root {
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.body-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1.3rem;
+  z-index: 10;
+  box-shadow: var(--box-shadow);
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+  margin-right: 1.25rem;
+}
+
+.navbar .logo h1 {
+  font-size: 1.8rem;
+}
+
+.divider {
+  flex: 1;
+  justify-self: stretch;
+  align-self: stretch;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  margin-right: 1.25rem;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  cursor: pointer;
+  text-decoration: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  color: inherit;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.products {
+  display: grid;
+  margin: 5vh 5vw;
+  gap: 0.2rem;
+  place-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.product {
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+
+.banner-container {
+  width: 100vw;
+  height: 40vh;
+  background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y2xvdGhpbmclMjBzdG9yZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80');
+  color: white;
+}
+
+.image-banner {
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+}
+
+.product img {
+  object-fit: fill;
+  object-position: center;
+  height: 300px;
+  width: 300px;
+}
+
+.product-name {
+  padding: 0.5rem 1.3rem 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.product-name a {
+  text-decoration: none;
+  color: black;
+}

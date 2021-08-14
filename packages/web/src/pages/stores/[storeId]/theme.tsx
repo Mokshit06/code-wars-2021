@@ -267,7 +267,6 @@ function Editor({
         (AutoTypings as any).create(monaco, editor, {
           sourceCache: new LocalStorageCache(),
           debounceDuration: 2000,
-          packageRecursionDepth: 10,
         });
       }}
     />

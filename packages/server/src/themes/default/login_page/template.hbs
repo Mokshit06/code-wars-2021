@@ -9,16 +9,43 @@
     </style>
   </head>
   <body>
-    <h1>Login</h1>
-    {{#each message.errors as |error|}}
-      <p>{{error}}</p>
-    {{/each}}
-    <form method='post' action='/login'>
-      <input name='email' placeholder='Email' type='email' />
-      <input name='password' placeholder='Password' type='password' />
-      <button>Login</button>
-    </form>
-    <div>Don't have an account? <a href='/register'>Register</a></div>
+    <div class='body-wrapper'>
+      <nav class='navbar'>
+        <div class='logo'>
+          <h1>{{name}}</h1>
+        </div>
+        <div class='divider'></div>
+        <div class='nav-links'>
+          <a href='/'>Home</a>
+          <a href='/products'>Products</a>
+          {{#unless user.isAuthenticated}}
+            <a href='/login'>Login</a>
+            <a href='/register'>Register</a>
+          {{else}}
+            <a href='#'>{{user.name}}</a>
+          {{/unless}}
+        </div>
+      </nav>
+      <div class='login'>
+        <div class='errors'>
+          {{#each message.errors as |error|}}
+            <p>{{error}}</p>
+          {{/each}}
+        </div>
+        <form method='post' action='/login'>
+          <label>
+            Email:
+            <input name='email' placeholder='Email' type='email' />
+          </label>
+          <label>
+            Password:
+            <input name='password' placeholder='Password' type='password' />
+          </label>
+          <button>Login</button>
+        </form>
+        <div>Don't have an account? <a href='/register'>Register</a></div>
+      </div>
+    </div>
     <script>
       // INJECT JAVASCRIPT
     </script>

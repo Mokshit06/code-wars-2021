@@ -9,7 +9,39 @@
     </style>
   </head>
   <body>
-    <h1>Single Product</h1>
+    <div class='body-wrapper'>
+      <nav class='navbar'>
+        <div class='logo'>
+          <h1>{{name}}</h1>
+        </div>
+        <div class='divider'></div>
+        <div class='nav-links'>
+          <a href='/'>Home</a>
+          <a href='/products'>Products</a>
+          {{#unless user.isAuthenticated}}
+            <a href='/login'>Login</a>
+            <a href='/register'>Register</a>
+          {{else}}
+            <a href='#'>{{user.name}}</a>
+          {{/unless}}
+        </div>
+      </nav>
+      <div class='content'>
+        <div class='product'>
+          {{#if product.images.[0]}}
+            <img src={{product.images.[0]}} alt={{product.name}} />
+          {{else}}
+            <img src='default_image' />
+          {{/if}}
+        </div>
+        <div class='product-info'>
+          <h2>{{product.name}}</h2>
+          <p>{{product.description}}</p>
+          <p>Price: ₹{{product.price}}</p>
+          <button id='add-to-cart'>Add to cart</button>
+        </div>
+      </div>
+    </div>
     <script>
       // INJECT JAVASCRIPT
     </script>

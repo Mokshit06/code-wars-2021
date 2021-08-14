@@ -125,6 +125,8 @@ async function getPageData(data: {
       ...user,
       isAuthenticated: !!data.storeUser,
     },
+    name: store.name,
+    domain: store.domain,
     products: store.products,
     product: null as any,
   };

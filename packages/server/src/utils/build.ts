@@ -11,6 +11,13 @@ const httpPlugin: Plugin = {
     }));
 
     build.onResolve({ filter: /.*/, namespace: 'http-url' }, args => {
+      if (args.path.startsWith('@')) {
+        return {
+          path: `https://cdn.skypack.dev/${args.path}`,
+          namespace: 'http-url',
+        };
+      }
+
       return {
         path: new URL(args.path, args.importer).toString(),
         namespace: 'http-url',

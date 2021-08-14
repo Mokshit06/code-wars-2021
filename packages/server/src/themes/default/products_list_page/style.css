@@ -3,3 +3,96 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+html {
+  scroll-behavior: smooth;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+:root {
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.body-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1.3rem;
+  z-index: 10;
+  box-shadow: var(--box-shadow);
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+  margin-right: 1.25rem;
+}
+
+.navbar .logo h1 {
+  font-size: 1.8rem;
+}
+
+.divider {
+  flex: 1;
+  justify-self: stretch;
+  align-self: stretch;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  margin-right: 1.25rem;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  cursor: pointer;
+  text-decoration: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  color: inherit;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.products {
+  display: grid;
+  margin: 5vh 5vw;
+  gap: 0.2rem;
+  place-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.product {
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+
+.product img {
+  object-fit: fill;
+  object-position: center;
+  height: 300px;
+  width: 300px;
+}
+
+.product-name {
+  padding: 0.5rem 1.3rem 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.product-name a {
+  text-decoration: none;
+  color: black;
+}

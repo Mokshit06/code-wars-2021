@@ -9,10 +9,42 @@
     </style>
   </head>
   <body>
-    <h1>Home</h1>
-    {{#if user.isAuthenticated}}
-      <h2>Hello {{user.name}}</h2>
-    {{/if}}
+    <div class='body-wrapper'>
+      <nav class='navbar'>
+        <div class='logo'>
+          <h1>{{name}}</h1>
+        </div>
+        <div class='divider'></div>
+        <div class='nav-links'>
+          <a href='/'>Home</a>
+          <a href='/products'>Products</a>
+          {{#unless user.isAuthenticated}}
+            <a href='/login'>Login</a>
+            <a href='/register'>Register</a>
+          {{else}}
+            <a href='#'>{{user.name}}</a>
+          {{/unless}}
+        </div>
+      </nav>
+      <div class='banner-container'>
+        <div class='image-banner'>
+          <h1>{{name}}</h1></div>
+      </div>
+      <div class='products'>
+        {{#each products as |product|}}
+          <div class='product'>
+            {{#if product.images.[0]}}
+              <img src={{product.images.[0]}} alt={{product.name}} />
+            {{else}}
+              <img src='default_image' />
+            {{/if}}
+            <div class='product-name'>
+              <a href='/products/{{product.id}}'>{{product.name}}</a>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
     <script>
       // INJECT JAVASCRIPT
     </script>
