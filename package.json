@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "server": "yarn workspace server dev",
-    "web": "yarn workspace web dev",
+    "web": "yarn patch-package && yarn workspace web dev",
     "dev": "concurrently \"yarn server\" \"yarn web\"",
     "postinstall": "patch-package"
   },

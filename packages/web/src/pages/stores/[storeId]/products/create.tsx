@@ -1,19 +1,36 @@
-import {
-  Flex,
-  Box,
-  Heading,
-  Input,
-  Button,
-  useToast,
-  Textarea,
-} from '@chakra-ui/react';
-import { Form, Formik, FormikProps, useField, FormikHelpers } from 'formik';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useMutation } from 'react-query';
-import * as yup from 'yup';
 import Field from '@/components/field';
 import api from '@/lib/api';
+import {
+  Box,
+  Button,
+  Flex,
+  FormLabel,
+  Heading,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Textarea,
+  useToast,
+} from '@chakra-ui/react';
+import {
+  FieldArray,
+  Form,
+  Formik,
+  FormikHelpers,
+  FormikProps,
+  useField,
+  useFormikContext,
+} from 'formik';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import * as yup from 'yup';
 
 const initialValues = {
   name: '',
@@ -29,53 +46,58 @@ type Values = typeof initialValues;
 export default function CreateProduct() {
   const toast = useToast();
   const router = useRouter();
-  const mutation = useMutation(async (values: Values) =>
-    api.post('/store/products', values)
+  const storeId = router.query.storeId as string;
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    async (values: Values) => api.post(`/stores/${storeId}/products`, values),
+    {
+      onSuccess() {
+        queryClient.invalidateQueries(['/stores', storeId, 'products']);
+        toast({
+          title: 'Product created',
+          description: 'Your product has been created!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+    }
   );
   const handleSubmit = async (
     values: Values,
     { setSubmitting }: FormikHelpers<Values>
   ) => {
     await mutation.mutateAsync(values);
-
-    toast({
-      title: 'Product created',
-      description: 'Your product has been created!',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-
     setSubmitting(false);
-    router.push('/store/products');
+    router.push(`/stores/${storeId}/products`);
   };
 
   return (
     <Flex flex={1} width="full" alignItems="center" justifyContent="center">
       <Head>
-        <title>Add Product</title>
+        <title>Create Product</title>
       </Head>
       <Box
-        // m={8}
-        // borderWidth={1}
-        // p={8}
+        m={8}
+        borderWidth={1}
+        p={8}
         width="full"
-        maxWidth={{ md: '800px' }}
-        // borderRadius={4}
+        maxWidth={{ base: '380px', sm: '600px', md: '680px' }}
+        borderRadius={4}
         textAlign="center"
-        // boxShadow="lg"
+        boxShadow="lg"
       >
-        {/* <Box my={2} textAlign="center">
-          <Heading>Add Product</Heading>
-        </Box> */}
-        {/* <Box mt={4}> */}
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          // validationSchema={createProductSchema}
-          component={CreateProductForm}
-        />
-        {/* </Box> */}
+        <Box my={2} textAlign="center">
+          <Heading fontWeight="400">Add a Product</Heading>
+        </Box>
+        <Box mt={4}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={createProductSchema}
+            component={CreateProductForm}
+          />
+        </Box>
       </Box>
     </Flex>
   );
@@ -85,98 +107,126 @@ function CreateProductForm({ isSubmitting, isValid }: FormikProps<Values>) {
   const [nameInput, nameMeta] = useField('name');
   const [descriptionInput, descriptionMeta, descriptionHelpers] =
     useField('description');
-  const [availabilityInput, availabilityMeta] = useField('availability');
+  const [availabilityInput, availabilityMeta, availabilityHelpers] =
+    useField('availability');
   const [skuInput, skuMeta] = useField('sku');
-  const [priceInput, priceMeta] = useField('price');
+  const [priceInput, priceMeta, priceHelpers] = useField('price');
   const [imagesInput, imagesMeta] = useField('images');
+  const { values } = useFormikContext<Values>();
 
   return (
     <Form>
-      <Flex flexWrap="wrap" justify="center" align="flex-start">
-        <Box flex="2 2 48rem" minWidth="51%">
-          <Box rounded="md" boxShadow="md" padding={5}>
-            <Box flex="1 1 22rem">
-              <Field meta={nameMeta} label="Name">
-                <Input {...nameInput} placeholder="Black t-shirt" />
-              </Field>
+      <Field meta={nameMeta} label="Name">
+        <Input {...nameInput} />
+      </Field>
+      <Field meta={descriptionMeta} label="Description">
+        <Textarea
+          value={descriptionInput.value}
+          onChange={e => {
+            descriptionHelpers.setValue(e.target.value);
+          }}
+        />
+      </Field>
+      <Field meta={availabilityMeta} label="Availability">
+        <NumberInput
+          min={0}
+          value={Number(availabilityInput.value || 0)}
+          onChange={(_, val) => availabilityHelpers.setValue(val)}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </Field>
+      <Field meta={skuMeta} label="SKU">
+        <Input {...skuInput} />
+      </Field>
+      <Field meta={priceMeta} label="Price">
+        <InputGroup>
+          <InputLeftAddon>₹</InputLeftAddon>
+          <NumberInput
+            w="full"
+            min={0}
+            value={Number(priceInput.value || 0)}
+            onChange={(_, val) => priceHelpers.setValue(val)}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </InputGroup>
+      </Field>
+      <FieldArray name="images">
+        {({ push }) => (
+          <Box mt={4}>
+            <FormLabel>Images</FormLabel>
+            <Box>
+              {values.images.map((image, index) => (
+                <ImageInput index={index} key={index} />
+              ))}
             </Box>
-            <Box flex="1 1 22rem">
-              <Field meta={descriptionMeta} label="Description">
-                <Textarea
-                  value={descriptionInput.value}
-                  onChange={e => {
-                    descriptionHelpers.setValue(e.target.value);
-                  }}
-                />
-              </Field>
+            <Box my={2}>
+              <Button onClick={() => push('')}>Add Image</Button>
             </Box>
           </Box>
-        </Box>
-        <Box flex="1 1 24rem" minWidth="0"></Box>
-        <Box flex="2 2 48rem" minWidth="51%"></Box>
-        {/* <Field meta={nameMeta} label="Store name">
-          <Input {...nameInput} />
-        </Field>
-        <Box my={6} mb={0} textAlign="right">
-          <Button
-            isLoading={isSubmitting}
-            disabled={isSubmitting || !isValid}
-            type="submit"
-            py={6}
-          >
-            Enter my store
-          </Button>
-        </Box> */}
-      </Flex>
+        )}
+      </FieldArray>
+      <Box my={6} mb={0} textAlign="right">
+        <Button
+          isLoading={isSubmitting}
+          disabled={isSubmitting || !isValid}
+          type="submit"
+          py={6}
+        >
+          Create product
+        </Button>
+      </Box>
     </Form>
+  );
+}
+
+function ImageInput({ index }: { index: number }) {
+  const [imageInput, imageMeta] = useField(`images[${index}]`);
+
+  return (
+    <Field meta={imageMeta}>
+      <Input {...imageInput} />
+    </Field>
   );
 }
 
 const createProductSchema = yup.object({
   name: yup
     .string()
-    .typeError('Store name should be a string')
-    .min(4, 'Store name should be of atleast 4 characters')
-    .max(15, 'Store name cannot be longer than 10 characters')
+    .typeError('Product name should be a string')
     .trim()
-    .required('Store name is required'),
-  address: yup
+    .required('Product name is required'),
+  description: yup
     .string()
-    .typeError('Address should be a string')
+    .typeError('Description should be a string')
     .trim()
-    .required('Address is required'),
-  apartment: yup
-    .string()
-    .typeError('Apartment should be a string')
-    .trim()
-    .required('Apartment is required'),
-  city: yup
-    .string()
-    .typeError('City should be a string')
-    .trim()
-    .required('City is required'),
-  country: yup
-    .string()
-    .typeError('Country should be a string')
-    .trim()
-    .required('Country is required'),
-  state: yup
-    .string()
-    .typeError('State should be a string')
-    .trim()
-    .required('State is required'),
-  pinCode: yup
-    .string()
-    .typeError('PIN code should be a string')
-    .matches(/^\d{6}$/, { message: 'PIN code is invalid' })
-    .required('PIN code is required'),
-  phoneNumber: yup
-    .string()
-    .typeError('Phone number should be a string')
-    .matches(/^[6-9]\d{9}$/, { message: 'Phone number is invalid' })
-    .required('Phone number is required'),
-  website: yup
-    .string()
-    .typeError('Website should be a string')
-    .url('Website should be a URL'),
+    .required('Description is required'),
+  availability: yup
+    .number()
+    .typeError('Availability should be a number')
+    .min(0)
+    .required(),
+  sku: yup.string().trim().typeError('SKU should be a string'),
+  price: yup
+    .number()
+    .typeError('Price should be a number')
+    .required('Price is required'),
+  images: yup
+    .array()
+    .of(
+      yup
+        .string()
+        .typeError('Image should be a string')
+        .trim()
+        .url('Image should be a valid URL')
+    ),
 });

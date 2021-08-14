@@ -8,12 +8,12 @@ export default function Field<TVal>({
   children,
 }: {
   meta: FieldMetaProps<TVal>;
-  label: string;
+  label?: string;
   children: ReactNode;
 }) {
   return (
     <FormControl mt={4} isInvalid={meta.touched && !!meta.error}>
-      <FormLabel>{label}</FormLabel>
+      {label && <FormLabel>{label}</FormLabel>}
       {children}
       <FormErrorMessage>{meta.error}</FormErrorMessage>
     </FormControl>
