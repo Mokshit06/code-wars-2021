@@ -76,7 +76,10 @@ router.get('/*', async (req, res) => {
       console.log(error);
       res.status(500).send();
     }
-  } catch {
+  } catch (error) {
+    if (error.message === 'redirect') {
+      return res.redirect('/');
+    }
     res.status(404).send();
   }
 });
@@ -101,6 +104,14 @@ async function getPageData(data: {
 
   const [path, pageType] = route;
   const page = store.pages.find(p => p.type === pageType);
+
+  if (
+    (pageType === PageType.LOGIN_PAGE ||
+      pageType === PageType.REGISTRATION_PAGE) &&
+    data.storeUser
+  ) {
+    throw new Error('redirect');
+  }
 
   if (!page) throw new Error();
 

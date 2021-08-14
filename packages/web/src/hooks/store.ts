@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import type { Store, Product, Page } from '@prisma/client';
+import type { Store, Product, Page, StoreUser } from '@prisma/client';
 import api from '@/lib/api';
 import { useToast } from '@chakra-ui/react';
 
@@ -28,6 +28,16 @@ export function useStorePages(id: string) {
     refetchOnWindowFocus: false,
     staleTime: Infinity,
   });
+}
+
+export function useStoreCustomers(id: string) {
+  return useQuery<
+    (StoreUser & {
+      _count: {
+        orders: number;
+      } | null;
+    })[]
+  >(['/stores', id, 'customers'], { enabled: !!id });
 }
 
 export function useChangeTheme(id: string) {

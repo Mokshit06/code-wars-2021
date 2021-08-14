@@ -14,9 +14,22 @@
       <p>{{error}}</p>
     {{/each}}
     <form method='post' action='/register'>
-      <input name='name' placeholder='Name' type='text' />
-      <input name='email' placeholder='Email' type='email' />
-      <input name='password' placeholder='Password' type='password' />
+      <label>
+        Name:
+        <input name='name' placeholder='Name' type='text' />
+      </label>
+      <label>
+        Phone Number
+        <input name='phoneNumber' placeholder='Phone Number' type='text' />
+      </label>
+      <label>
+        Email:
+        <input name='email' placeholder='Email' type='email' />
+      </label>
+      <label>
+        Password:
+        <input name='password' placeholder='Password' type='password' />
+      </label>
       <button>Register</button>
     </form>
     <div>Already have an account? <a href='/login'>Login</a></div>

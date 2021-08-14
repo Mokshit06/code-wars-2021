@@ -120,24 +120,21 @@ router.post('/:id/products', ensureAuthenticated, async (req, res) => {
   });
 });
 
-router.get('/:id/customers', ensureAuthenticated, async (req, res) => {
-  if (!req.user) return;
-
-  const customers = await prisma.storeUser.findMany({
-    where: { storeId: req.params.id },
-  });
-
-  res.json(customers);
-});
-
 router.get('/:id/pages', ensureAuthenticated, async (req, res) => {
-  if (!req.user) return;
-
   const pages = await prisma.page.findMany({
     where: { storeId: req.params.id },
   });
 
   res.json(pages);
+});
+
+router.get('/:id/customers', ensureAuthenticated, async (req, res) => {
+  const customers = await prisma.storeUser.findMany({
+    where: { storeId: req.params.id },
+    include: { _count: { select: { orders: true } } },
+  });
+
+  res.json(customers);
 });
 
 router.put('/:id/theme', ensureAuthenticated, async (req, res) => {

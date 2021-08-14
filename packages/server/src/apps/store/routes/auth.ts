@@ -27,6 +27,7 @@ router.post('/api/register', async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
+      phoneNumber: req.body.phoneNumber,
       domain: req.store!,
     });
 
@@ -66,6 +67,7 @@ router.post('/register', async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
+      phoneNumber: req.body.phoneNumber,
       domain: req.store!,
     });
 

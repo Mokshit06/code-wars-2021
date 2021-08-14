@@ -10,7 +10,7 @@ import {
   Divider,
   Flex,
   Heading,
-  Tag,
+  Text,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -96,7 +96,7 @@ export default function StoreDesign() {
     );
   }, [initialPages]);
 
-  if (isLoading) {
+  if (isLoading || !initialPages) {
     return null;
   }
 
@@ -165,9 +165,33 @@ function ThemePicker() {
       <Box mb={6}>
         <Heading fontWeight="500">Choose theme</Heading>
       </Box>
-      <Flex alignItems="center" justifyContent="space-evenly">
-        <Button onClick={() => setTheme('default')}>Default</Button>
-        <Button onClick={() => setTheme('custom')}>Custom</Button>
+      <Flex gridGap="4" alignItems="center" justifyContent="space-evenly">
+        <Box
+          py={6}
+          px={10}
+          bg={theme === 'default' ? 'gray.50' : 'white'}
+          rounded="md"
+          cursor="pointer"
+          boxShadow="md"
+          transition="box-shadow 200ms ease-in"
+          _hover={{ boxShadow: 'lg' }}
+          onClick={() => setTheme('default')}
+        >
+          <Text fontSize="xl">Default</Text>
+        </Box>
+        <Box
+          py={6}
+          px={10}
+          rounded="md"
+          cursor="pointer"
+          bg={theme === 'custom' ? 'gray.50' : 'white'}
+          boxShadow="md"
+          transition="box-shadow 200ms ease-in"
+          _hover={{ boxShadow: 'lg' }}
+          onClick={() => setTheme('custom')}
+        >
+          <Text fontSize="xl">Custom</Text>
+        </Box>
       </Flex>
       <Box mt={6} width="100%" textAlign="right">
         <Button

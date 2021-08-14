@@ -31,8 +31,12 @@ export default function Layout({ children }: { children: ReactNode }) {
           width={{ md: 'auto', base: 'full' }}
           alignItems="center"
         >
+          <Link href="/">Home</Link>
           {user.isAuthenticated ? (
-            <Button onClick={() => logout()}>Logout</Button>
+            <>
+              <Link href="/stores">Stores</Link>
+              <Button onClick={() => logout()}>Logout</Button>
+            </>
           ) : (
             <Link href="/login">Login</Link>
           )}

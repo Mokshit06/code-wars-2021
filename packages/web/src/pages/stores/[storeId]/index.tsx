@@ -15,6 +15,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const selectedStyle: CSSObject = {
@@ -74,13 +75,11 @@ export default function Store() {
                     You’ve added a product
                   </Text>
                   <Text>Add more products or move on to another tip.</Text>
-                  <Button
-                    my="1.5rem"
-                    as="a"
-                    href={`/stores/${storeId}/products/create`}
-                  >
-                    Add another product
-                  </Button>
+                  <Link href={`/stores/${storeId}/products/create`} passHref>
+                    <Button my="1.5rem" as="a">
+                      Add another product
+                    </Button>
+                  </Link>
                 </>
               ) : (
                 <>
@@ -88,13 +87,11 @@ export default function Store() {
                     Add your first product
                   </Text>
                   <Text>Add the first product in your new store.</Text>
-                  <Button
-                    my="1.5rem"
-                    as="a"
-                    href={`/stores/${storeId}/products/create`}
-                  >
-                    Add first product
-                  </Button>
+                  <Link href={`/stores/${storeId}/products/create`} passHref>
+                    <Button my="1.5rem" as="a">
+                      Add first product
+                    </Button>
+                  </Link>
                 </>
               )}
             </TabPanel>
@@ -106,9 +103,11 @@ export default function Store() {
                 Choose a theme and add your logo, colors, and images to reflect
                 your brand.
               </Text>
-              <Button my="1.5rem" as="a" href={`/stores/${storeId}/theme`}>
-                Customize theme
-              </Button>
+              <Link href={`/stores/${storeId}/theme`} passHref>
+                <Button my="1.5rem" as="a">
+                  Customize theme
+                </Button>
+              </Link>
             </TabPanel>
           </TabPanels>
         </Tabs>

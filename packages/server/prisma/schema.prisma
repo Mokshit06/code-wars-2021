@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["selectRelationCount"]
 }
 
 enum SocialProvider {
@@ -32,15 +33,16 @@ model User {
 }
 
 model StoreUser {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  password  String
-  store     Store    @relation(fields: [storeId], references: [id])
-  orders    Order[]
-  storeId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  phoneNumber String?
+  email       String
+  password    String
+  store       Store    @relation(fields: [storeId], references: [id])
+  orders      Order[]
+  storeId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@unique([email, storeId])
 }

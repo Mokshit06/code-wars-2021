@@ -36,6 +36,7 @@ export async function register(data: {
   email: string;
   password: string;
   domain: string;
+  phoneNumber: string;
 }) {
   const store = await prisma.store.findUnique({
     where: { domain: data.domain },
@@ -59,6 +60,7 @@ export async function register(data: {
       email: data.email,
       password: await bcrypt.hash(data.password, 8),
       storeId: store!.id,
+      phoneNumber: data.phoneNumber,
     },
   });
 

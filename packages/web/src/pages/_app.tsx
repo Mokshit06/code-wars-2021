@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import type { QueryFunction, QueryKey } from 'react-query';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import Layout from '../components/layout';
 import api from '../lib/api';
 
@@ -43,6 +44,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
